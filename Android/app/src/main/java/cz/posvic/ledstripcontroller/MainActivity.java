@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -38,10 +39,14 @@ public class MainActivity extends ActionBarActivity {
 	private StringBuilder sb = new StringBuilder();
 	private Handler mReceiveHandler;
 
+	private TextView tvState;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		tvState = (TextView) findViewById(R.id.tvState);
 
 		final Button butTurnOffStrip = (Button) findViewById(R.id.butTurnOffStrip);
 		final Button butRed = (Button) findViewById(R.id.butRed);
@@ -183,11 +188,12 @@ public class MainActivity extends ActionBarActivity {
 		mBluetoothAdapter.cancelDiscovery();
 
 		// Establish the connection. This will block until it connects.
-		Log.d(TAG, "connecting...");
+		tvState.setText(R.string.bt_state_connecting);
 		try {
 			mBluetoothSocket.connect();
-			Log.d(TAG, "connection ok");
+			tvState.setText(R.string.bt_state_connected);
 		} catch (IOException e1) {
+			tvState.setText(R.string.bt_state_disconnected);
 			Log.e(TAG, e1.toString());
 			try {
 				mBluetoothSocket.close();
@@ -207,6 +213,7 @@ public class MainActivity extends ActionBarActivity {
 
 		// Close bluetooth socket
 		try {
+			tvState.setText(R.string.bt_state_disconnected);
 			mBluetoothSocket.close();
 		} catch (IOException e) {
 			Log.e(TAG, e.toString());

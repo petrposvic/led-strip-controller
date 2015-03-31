@@ -4,4 +4,8 @@
 	<string name="app_name">LED Strip Controller</string>
 	<string name="action_info">Info</string>
 
+	<string name="bt_state_connecting">Connecting…</string>
+	<string name="bt_state_connected">Connected</string>
+	<string name="bt_state_disconnected">Disconnected</string>
+
 </resources>

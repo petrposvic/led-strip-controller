@@ -10,6 +10,13 @@
 	android:orientation="vertical"
 	tools:context=".MainActivity">
 
+	<TextView
+		android:id="@+id/tvState"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="right"
+		android:text="@string/bt_state_disconnected" />
+
 	<Button
 		android:id="@+id/butTurnOffStrip"
 		android:layout_width="match_parent"
