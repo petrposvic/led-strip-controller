@@ -19,6 +19,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chiralcode.colorpicker.ColorPickerDialog;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
 
 	private ProgressDialog mProgress;
 	private TextView tvState;
+	private int mLastColor = Color.RED;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +56,7 @@ public class MainActivity extends ActionBarActivity {
 		tvState = (TextView) findViewById(R.id.tvState);
 
 		final Button butTurnOffStrip = (Button) findViewById(R.id.butTurnOffStrip);
-		final Button butRed = (Button) findViewById(R.id.butRed);
-		final Button butGreen = (Button) findViewById(R.id.butGreen);
-		final Button butBlue = (Button) findViewById(R.id.butBlue);
-		final Button butTurnOnChanging = (Button) findViewById(R.id.butTurnOnChanging);
+		final Button butSetColor = (Button) findViewById(R.id.butSetColor);
 		final SeekBar seekSpeed = (SeekBar) findViewById(R.id.seekSpeed);
 
 		butTurnOffStrip.setOnClickListener(new View.OnClickListener() {
@@ -64,59 +64,28 @@ public class MainActivity extends ActionBarActivity {
 			public void onClick(View v) {
 				bluetoothSend("1");
 				butTurnOffStrip.setEnabled(false);
-				butRed.setEnabled(true);
-				butGreen.setEnabled(true);
-				butBlue.setEnabled(true);
-				butTurnOnChanging.setEnabled(true);
+				butSetColor.setEnabled(true);
 			}
 		});
 
-		butRed.setOnClickListener(new View.OnClickListener() {
+		butSetColor.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				bluetoothSend("1r");
-				butTurnOffStrip.setEnabled(true);
-				butRed.setEnabled(false);
-				butGreen.setEnabled(true);
-				butBlue.setEnabled(true);
-				butTurnOnChanging.setEnabled(true);
-			}
-		});
+				ColorPickerDialog colorPickerDialog = new ColorPickerDialog(MainActivity.this, mLastColor, new ColorPickerDialog.OnColorSelectedListener() {
+					@Override
+					public void onColorSelected(int color) {
+						mLastColor = color;
+						Log.d(TAG, Color.red(color) + ", " + Color.green(color) + ", " + Color.blue(color));
 
-		butGreen.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				bluetoothSend("1g");
-				butTurnOffStrip.setEnabled(true);
-				butRed.setEnabled(true);
-				butGreen.setEnabled(false);
-				butBlue.setEnabled(true);
-				butTurnOnChanging.setEnabled(true);
-			}
-		});
+						char r = (char) Color.red(color);
+						char g = (char) Color.green(color);
+						char b = (char) Color.blue(color);
 
-		butBlue.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				bluetoothSend("1b");
-				butTurnOffStrip.setEnabled(true);
-				butRed.setEnabled(true);
-				butGreen.setEnabled(true);
-				butBlue.setEnabled(false);
-				butTurnOnChanging.setEnabled(true);
-			}
-		});
-
-		butTurnOnChanging.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				bluetoothSend("0");
-				butTurnOffStrip.setEnabled(true);
-				butRed.setEnabled(true);
-				butGreen.setEnabled(true);
-				butBlue.setEnabled(true);
-				butTurnOnChanging.setEnabled(false);
-				seekSpeed.setProgress(5);
+						bluetoothSend("1" + r + g + b);
+						butTurnOffStrip.setEnabled(true);
+					}
+				});
+				colorPickerDialog.show();
 			}
 		});
 
@@ -139,16 +108,11 @@ public class MainActivity extends ActionBarActivity {
 				if (progress == 0) {
 					bluetoothSend("1");
 					butTurnOffStrip.setEnabled(false);
-					butRed.setEnabled(true);
-					butGreen.setEnabled(true);
-					butBlue.setEnabled(true);
+					butSetColor.setEnabled(true);
 				} else {
 					bluetoothSend("0" + progress);
 					butTurnOffStrip.setEnabled(true);
-					butRed.setEnabled(true);
-					butGreen.setEnabled(true);
-					butBlue.setEnabled(true);
-					butTurnOnChanging.setEnabled(false);
+					butSetColor.setEnabled(true);
 				}
 			}
 		});

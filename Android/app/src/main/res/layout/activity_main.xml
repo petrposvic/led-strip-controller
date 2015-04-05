@@ -23,39 +23,17 @@
 		android:layout_height="wrap_content"
 		android:text="Turn off LED strip" />
 
-	<LinearLayout
+	<Button
+		android:id="@+id/butSetColor"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal">
-
-		<Button
-			android:id="@+id/butRed"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="0.3"
-			android:text="Red" />
-
-		<Button
-			android:id="@+id/butGreen"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="0.3"
-			android:text="Green" />
-
-		<Button
-			android:id="@+id/butBlue"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="0.3"
-			android:text="Blue" />
-
-	</LinearLayout>
+		android:text="Set color" />
 
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="15dp"
-		android:text="Color speed"
+		android:text="Changing color speed"
 		android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
 	<SeekBar
@@ -64,11 +42,5 @@
 		android:layout_height="wrap_content"
 		android:progress="4"
 		android:max="5" />
-
-	<Button
-		android:id="@+id/butTurnOnChanging"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="Turn on changing colors" />
 
 </LinearLayout>
