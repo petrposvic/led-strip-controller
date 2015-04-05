@@ -62,7 +62,7 @@ public class MainActivity extends ActionBarActivity {
 		butTurnOffStrip.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				bluetoothSend("1");
+				bluetoothSend("1" + (char) 0 + (char) 0 + (char) 0);
 				butTurnOffStrip.setEnabled(false);
 				butSetColor.setEnabled(true);
 			}
@@ -77,11 +77,12 @@ public class MainActivity extends ActionBarActivity {
 						mLastColor = color;
 						Log.d(TAG, Color.red(color) + ", " + Color.green(color) + ", " + Color.blue(color));
 
-						char r = (char) Color.red(color);
-						char g = (char) Color.green(color);
-						char b = (char) Color.blue(color);
-
-						bluetoothSend("1" + r + g + b);
+						bluetoothSend(
+								"1" +
+								(char) (Color.red(color) / 2) +
+								(char) (Color.green(color) / 2) +
+								(char) (Color.blue(color) / 2)
+						);
 						butTurnOffStrip.setEnabled(true);
 					}
 				});
@@ -106,7 +107,7 @@ public class MainActivity extends ActionBarActivity {
 				Log.d(TAG, "progress = " + progress);
 
 				if (progress == 0) {
-					bluetoothSend("1");
+					bluetoothSend("1" + (char) 0 + (char) 0 + (char) 0);
 					butTurnOffStrip.setEnabled(false);
 					butSetColor.setEnabled(true);
 				} else {

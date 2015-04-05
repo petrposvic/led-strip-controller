@@ -9,9 +9,6 @@
 #define PIN_BT_RX   4
 #define PIN_BT_TX   3
 
-// Sound sensor
-#define PIN_SOUND   A6
-
 SoftwareSerial Bluetooth =  SoftwareSerial(PIN_BT_TX, PIN_BT_RX);
 
 // 0 gentle color replacing
@@ -171,12 +168,19 @@ void bt_proceed() {
       Bluetooth.println("OK mode 1 or 2");
       Serial.println("Set mode 1 or 2");
 
-      if (Bluetooth.available() && parse_color(Bluetooth.read())) {
-        // New nextR, nextG, nextB from parse_color
-      } else {
-        nextR = 0;
-        nextG = 0;
-        nextB = 0;
+      if (Bluetooth.available()) {
+        nextR = Bluetooth.read() * 2;
+        if (Bluetooth.available()) {
+          nextG = Bluetooth.read() * 2;
+          if (Bluetooth.available()) {
+            nextB = Bluetooth.read() * 2;
+          } else {
+            nextB = 0;
+          }
+        } else {
+          nextG = 0;
+          nextB = 0;
+        }
       }
 
       Serial.print("Next colors (");
@@ -186,46 +190,10 @@ void bt_proceed() {
       Serial.print(",");
       Serial.print(nextB);
       Serial.println(")");
-    } else
-
-    if (parse_color(ch)) {
-      Bluetooth.print("OK ");
-      Bluetooth.println(ch);
-      Serial.print("Set ");
-      Serial.println(ch);
     }
 
     Serial.println(ch);
   }
-}
-
-boolean parse_color(char ch) {
-  Serial.print("-- parse_color(");
-  Serial.print(ch);
-  Serial.println(") --");
-
-  if (ch == 'r') {
-    nextR = 255;
-    nextG = 0;
-    nextB = 0;
-    return true;
-  } else
-
-  if (ch == 'g') {
-    nextR = 0;
-    nextG = 255;
-    nextB = 0;
-    return true;
-  } else
-
-  if (ch == 'b') {
-    nextR = 0;
-    nextG = 0;
-    nextB = 255;
-    return true;
-  }
-
-  return false;
 }
 
 boolean parse_speed(char ch) {
