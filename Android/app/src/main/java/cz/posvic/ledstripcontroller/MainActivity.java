@@ -1,8 +1,11 @@
 package cz.posvic.ledstripcontroller;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -39,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
 	private StringBuilder sb = new StringBuilder();
 	private Handler mReceiveHandler;
 
+	private ProgressDialog mProgress;
 	private TextView tvState;
 
 	@Override
@@ -187,23 +191,51 @@ public class MainActivity extends ActionBarActivity {
 		// when you attempt to connect and pass your message.
 		mBluetoothAdapter.cancelDiscovery();
 
-		// Establish the connection. This will block until it connects.
-		tvState.setText(R.string.bt_state_connecting);
-		try {
-			mBluetoothSocket.connect();
-			tvState.setText(R.string.bt_state_connected);
-		} catch (IOException e1) {
-			tvState.setText(R.string.bt_state_disconnected);
-			Log.e(TAG, e1.toString());
-			try {
-				mBluetoothSocket.close();
-			} catch (IOException e2) {
-				Log.e(TAG, e2.toString());
-			}
+		new BluetoothConnect().execute();
+	}
+
+	private class BluetoothConnect extends AsyncTask<Void, Void, Boolean> {
+
+		@Override
+		protected void onPreExecute() {
+			mProgress = ProgressDialog.show(MainActivity.this, "Connecting", "Please wait");
+			mProgress.setCancelable(true);
+
+			tvState.setText(R.string.bt_state_connecting);
 		}
 
-		mConnectedThread = new ConnectedThread(mBluetoothSocket);
-		mConnectedThread.start();
+		@Override
+		protected Boolean doInBackground(Void... params) {
+
+			// Establish the connection. This will block until it connects.
+			try {
+				mBluetoothSocket.connect();
+				return Boolean.TRUE;
+			} catch (IOException e1) {
+				Log.e(TAG, e1.toString());
+				try {
+					mBluetoothSocket.close();
+				} catch (IOException e2) {
+					Log.e(TAG, e2.toString());
+				}
+			}
+
+			return Boolean.FALSE;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean success) {
+			mProgress.dismiss();
+
+			if (success) {
+				tvState.setText(R.string.bt_state_connected);
+
+				mConnectedThread = new ConnectedThread(mBluetoothSocket);
+				mConnectedThread.start();
+			} else {
+				tvState.setText(R.string.bt_state_disconnected);
+			}
+		}
 	}
 
 	@Override
@@ -244,6 +276,12 @@ public class MainActivity extends ActionBarActivity {
 
 	private void bluetoothSend(String str) {
 		Log.d(TAG, "-- bluetoothSend(" + str + ") --");
+
+		if (mConnectedThread == null) {
+			Log.e(TAG, "no bluetooth connection");
+			return;
+		}
+
 		mConnectedThread.write(str);
 	}
 
