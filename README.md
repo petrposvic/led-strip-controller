@@ -1,1 +1,1 @@
-# led-strip-controller
+# Led Strip Controller
